@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <!-- прототип, не для поиска -->
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Blink — гид по местам притяжения</title>
+  <link rel="icon" type="image/png" href="assets/blink-logo.png" />
+  <link rel="stylesheet" href="nightlife2.css" />
+</head>
+<body>
+
+  <!-- device mockup -->
+  <div class="phone">
+    <span class="side-btn silent"></span>
+    <span class="side-btn vol-up"></span>
+    <span class="side-btn vol-down"></span>
+    <span class="side-btn power"></span>
+
+    <div class="nl-shell">
+
+      <!-- iOS status bar -->
+      <div class="status-bar">
+        <span class="sb-time">4:20</span>
+        <span class="island"><img src="assets/blink-logo.png" alt="" aria-hidden="true" /></span>
+        <span class="sb-icons">
+          <svg viewBox="0 0 18 12" aria-hidden="true" class="sb-ic">
+            <rect x="0"  y="8"   width="3" height="4"   rx="1"/>
+            <rect x="5"  y="5.5" width="3" height="6.5" rx="1"/>
+            <rect x="10" y="3"   width="3" height="9"   rx="1"/>
+            <rect x="15" y="0"   width="3" height="12"  rx="1"/>
+          </svg>
+          <svg viewBox="0 0 16 12" aria-hidden="true" class="sb-ic">
+            <path d="M8 11.2 5.6 8.5a3.6 3.6 0 0 1 4.8 0L8 11.2Zm4-4.4a7.7 7.7 0 0 0-8 0L2.3 4.9a10.1 10.1 0 0 1 11.4 0L12 6.8ZM15.4 3a12.5 12.5 0 0 0-14.8 0L-.6 1.1a15 15 0 0 1 17.2 0L15.4 3Z"/>
+          </svg>
+          <svg viewBox="0 0 26 12" aria-hidden="true" class="sb-ic sb-batt">
+            <rect x="0.5" y="0.5" width="22" height="11" rx="3.2" fill="none" stroke="currentColor" opacity="0.4"/>
+            <rect x="2"   y="2"   width="19" height="8"  rx="2"/>
+            <path d="M24 4.2v3.6c.9-.3 1.4-.9 1.4-1.8S24.9 4.5 24 4.2Z" opacity="0.4"/>
+          </svg>
+        </span>
+      </div>
+
+      <!-- одна лента: всё, что раньше жило в трёх вкладках -->
+      <main class="nl-scroll" id="scroll">
+
+        <header class="nl-head">
+          <h1 class="nl-title">блинк гид<img class="title-star" src="react/star.png" alt="" aria-hidden="true" /></h1>
+          <button class="city-pill" type="button" id="city-btn">
+            <span id="city-label">москва</span>
+            <svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1.2 5 4.8 9 1.2"/></svg>
+          </button>
+        </header>
+        <p class="nl-sub">самые популярные ночные места<br />твоего города</p>
+
+        <!-- ─── 1 · твоя ночь · тап открывает личную сводку ─── -->
+        <button class="you" id="you-card" type="button"></button>
+
+        <!-- ─── 2 · топ мест города ─── -->
+        <section class="sec">
+          <h2 class="h2" id="top-title">топ мест</h2>
+          <div class="vlist" id="vlist"></div>
+        </section>
+
+        <!-- ─── 3 · топ тусовщиков ─── -->
+        <section class="sec sec--people">
+          <h2 class="h2">топ тусовщиков</h2>
+          <p class="h2-note" id="scope-note" hidden></p>
+          <div class="scope" id="scope">
+            <button class="scope-btn on" data-scope="city" type="button">весь город</button>
+            <button class="scope-btn"    data-scope="friends" type="button">друзья</button>
+          </div>
+          <div class="prail" id="prail"></div>
+        </section>
+
+        <!-- ─── 4 · друзья ходят, а ты — нет ─── -->
+        <section class="sec sec--miss" id="miss-sec">
+          <h2 class="h2 h2--st">
+            куда сходить<br />с друзьями
+            <img class="h2-st h2-st--eyes" src="react/image_eyes_sticker.png" alt="" aria-hidden="true" />
+          </h2>
+          <div class="vlist" id="missing"></div>
+        </section>
+
+        <div class="scroll-tail"></div>
+      </main>
+
+      <!-- ─── шторка: заведение / твоя ночь / выбор города ─── -->
+      <div class="sheet-back" id="sheet-back" hidden></div>
+      <div class="sheet" id="sheet" hidden role="dialog" aria-label="Подробности">
+        <span class="sheet-grab"></span>
+        <div id="sheet-body"></div>
+      </div>
+
+      <!-- ─── шеринг-экран «открытые места» ─── -->
+      <div class="share" id="share" hidden role="dialog" aria-label="Открытые места">
+        <div id="share-body"></div>
+      </div>
+
+      <div class="toast" id="toast" hidden></div>
+
+      <span class="home-bar"></span>
+    </div>
+  </div>
+
+  <script type="module" src="nightlife2.js"></script>
+</body>
+</html>
