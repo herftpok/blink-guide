@@ -1,0 +1,107 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Витрина вариантов шапки: ряд экранов, который листается вбок.
+   Здесь только раскладка ряда и блоки, которых нет в прототипе; всё
+   остальное берётся из nightlife2.css, чтобы первый вариант всегда
+   совпадал с текущим экраном.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* nightlife2.css центрирует body гридом под один мокап — для ряда это
+   надо снять целиком, иначе экраны наезжают друг на друга */
+html body.hv {
+  display: block;
+  place-items: initial;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.hv-rail {
+  display: flex;
+  align-items: center;
+  gap: 44px;
+  height: 100vh;
+  padding: 0 56px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.hv-rail::-webkit-scrollbar { display: none; }
+
+.hv-item {
+  flex: 0 0 auto;
+  scroll-snap-align: center;
+}
+
+/* экран целиком, но не выше окна — на низких окнах ужимается */
+.hv-item .nl-shell { height: min(760px, calc(100vh - 72px)); }
+.hv-item .nl-scroll { overflow: hidden; }
+
+/* ─── блоки, которых нет в прототипе ─────────────────────────────────── */
+
+/* напарник и любимое место под карточкой */
+.hv-duo { margin: 22px var(--pad) 0; }
+
+
+/* стикер персентиля: вне flex-родителя он растягивается на всю ширину */
+.hv-pct {
+  margin-top: 20px;
+  width: max-content;
+  max-width: 100%;
+}
+
+
+/* Сводка без карточек: подложек нет вовсе, группы разделены только
+   воздухом и типографикой. Кнопка примыкает к линии, которой сводка
+   заканчивается — отсюда и связка «вот сводка → узнать больше». */
+.hv-sum { margin: 14px var(--pad) 0; }
+
+.hv-sum-n { display: flex; align-items: baseline; gap: 4px; }
+.hv-sum-n .xnum { font-size: 40px; margin-right: 2px; }
+.hv-sum-n em {
+  font-style: normal;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: rgba(255, 255, 255, 0.44);
+}
+.hv-sum-n i {
+  margin-left: 8px;
+  font-style: normal;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.hv-sum-seg { margin-top: 16px; }
+.hv-sum-seg i.on { background: linear-gradient(180deg, #ff9dea, #b48cff); }
+
+.hv-sum-duo { margin-top: 26px; }
+
+/* кнопка — продолжение сводки, а не отдельная плашка */
+.hv-go {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 24px;
+  padding: 17px 0 0;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0;
+  background: none;
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+}
+.hv-go span:last-child { display: flex; margin-left: auto; color: var(--accent); }
+.hv-go svg {
+  width: 6px; height: 10px;
+  fill: none; stroke: currentColor; stroke-width: 2.4;
+  stroke-linecap: round; stroke-linejoin: round;
+}

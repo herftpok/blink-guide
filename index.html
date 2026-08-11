@@ -2,10 +2,10 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <!-- прототип, не для поиска -->
   <meta name="robots" content="noindex, nofollow" />
-  <title>Blink — гид по местам притяжения</title>
+  <meta name="referrer" content="no-referrer" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Blink — карта тусовок · лента</title>
   <link rel="icon" type="image/png" href="assets/blink-logo.png" />
   <link rel="stylesheet" href="nightlife2.css" />
 </head>
@@ -46,13 +46,19 @@
       <main class="nl-scroll" id="scroll">
 
         <header class="nl-head">
-          <h1 class="nl-title">блинк гид<img class="title-star" src="react/star.png" alt="" aria-hidden="true" /></h1>
+          <img class="nl-logo" src="logo.png" alt="блинк" />
           <button class="city-pill" type="button" id="city-btn">
             <span id="city-label">москва</span>
             <svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1.2 5 4.8 9 1.2"/></svg>
           </button>
         </header>
-        <p class="nl-sub">самые популярные ночные места<br />твоего города</p>
+
+        <!-- герой в языке шеринг-экрана: шар за краем, крупный титул -->
+        <div class="nl-hero">
+          <img class="nl-disco" src="assets/disco-ball.png" alt="" aria-hidden="true" />
+          <h1 class="nl-title"><span>карта</span><span>тусовок</span></h1>
+          <p class="nl-sub">собрали самые популярные ночные места твоего города</p>
+        </div>
 
         <!-- ─── 1 · твоя ночь · тап открывает личную сводку ─── -->
         <button class="you" id="you-card" type="button"></button>

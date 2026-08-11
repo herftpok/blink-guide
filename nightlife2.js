@@ -1,4 +1,4 @@
-// Blink · гид по местам притяжения — ВАРИАНТ «ЛЕНТА».
+// Blink · «карта тусовок» — места притяжения ночью, ВАРИАНТ «ЛЕНТА».
 // Всё одним скроллом, без вкладок. Второй вариант — nightlife.js («вкладки»),
 // данные у них общие (nightlife-data.js), верстка и логика — раздельные.
 
@@ -181,37 +181,33 @@ function renderYou() {
     box.append(sticker('star.png', 'you-star'));
     box.append(el('div', 'you-t', `${C.loc} ты ещё нигде не отметился`));
     box.append(el('div', 'you-n',
-      `в гиде ${places(C.guide)} — сходи хотя бы в одно, и здесь появится твоя ночная статистика`));
+      `на карте ${places(C.guide)} — сходи хотя бы в одно, и здесь появится твоя ночная статистика`));
     return;
   }
 
   box.className = 'you';
-  const disco = el('img', 'you-disco');
-  disco.src = 'assets/disco-ball.png';
-  disco.alt = '';
-  disco.setAttribute('aria-hidden', 'true');
-  box.append(disco);
-  box.append(el('div', 'you-eyebrow', 'открытые места'));
 
-  const n = el('div', 'you-num');
-  n.innerHTML = `${me.spots}<em> / ${C.guide}</em>`;
-  box.append(n);
+  const row = el('span', 'you-row');
 
-  const bar = el('div', 'you-bar');
-  const fill = el('b');
-  fill.style.width = '0%';
-  bar.append(fill);
-  box.append(bar);
-  requestAnimationFrame(() => {
-    fill.style.width = `${Math.max(4, Math.round((me.spots / C.guide) * 100))}%`;
-  });
+  // число — тем же стикером, что и счётчики посещений в списках
+  const badge = el('span', 'you-badge');
+  badge.append(xnum(String(me.spots)), el('em', null, `/ ${C.guide}`));
+  row.append(badge);
 
-  const more = el('div', 'you-more');
-  more.append(el('span', null, 'посмотреть и поделиться'));
-  const ch = document.createElement('span');
-  ch.innerHTML = CHEVRON;
-  more.append(ch);
-  box.append(more);
+  const txt = el('span', 'you-txt');
+  txt.append(el('b', null, 'посещённые места'), el('i', null, 'узнать больше'));
+  row.append(txt);
+
+  const go = el('span', 'you-go');
+  go.innerHTML = CHEVRON;
+  row.append(go);
+  box.append(row);
+
+  // шкала по местам гида: одно деление — одно место, свои закрашены
+  const seg = el('span', 'you-seg');
+  for (let i = 0; i < C.guide; i++) seg.append(el('i', i < me.spots ? 'on' : null));
+  box.append(seg);
+  requestAnimationFrame(() => box.classList.add('you--lit'));
 }
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -442,7 +438,7 @@ function openYou() {
   // ── шапка ──
   const top = el('div', 'sh2-top');
   const brand = el('div', 'sh2-brand');
-  brand.append(img('assets/blink-logo.png'), el('span', null, 'блинк гид'));
+  brand.append(img('assets/blink-logo.png'), el('span', null, 'карта тусовок'));
   const x = el('button', 'sh2-x');
   x.type = 'button';
   x.setAttribute('aria-label', 'Закрыть');
@@ -477,7 +473,7 @@ function openYou() {
   const n = el('div', 'sh2-prog-num');
   const nb = el('b');
   n.append(nb, el('em', null, ` / ${C.guide}`));
-  prog.append(n, el('div', 'sh2-prog-t', 'мест гида открыто'));
+  prog.append(n, el('div', 'sh2-prog-t', 'мест открыто'));
   const bar = el('div', 'sh2-bar');
   const fill = el('b');
   fill.style.width = '0%';
@@ -549,7 +545,7 @@ function openYou() {
 
   shareBody.append(el('div', 'sh2-fill'));
 
-  const btn = el('button', 'sh2-btn', been.length ? 'ПОДЕЛИТЬСЯ' : 'ОТКРЫТЬ ГИД');
+  const btn = el('button', 'sh2-btn', been.length ? 'ПОДЕЛИТЬСЯ' : 'ОТКРЫТЬ КАРТУ');
   btn.type = 'button';
   btn.addEventListener('click', () => {
     if (been.length) return toast('карточка ушла в шеринг');
@@ -566,7 +562,7 @@ function openYou() {
 function openCityPicker() {
   openSheet((box) => {
     box.append(el('div', 'sh-name', 'город'));
-    box.append(el('div', 'sh-meta', 'гид собирается там, где у блинка хватает ночных данных'));
+    box.append(el('div', 'sh-meta', 'карта собирается там, где у блинка хватает ночных данных'));
 
     const list = el('div', 'city-list');
     for (const c of CITIES) {
@@ -597,7 +593,7 @@ function setCity(id) {
   $('city-label').textContent = C.short;
   renderAll();
   $('scroll').scrollTo({ top: 0, behavior: 'smooth' });
-  toast(`гид: ${C.name}`);
+  toast(`карта тусовок: ${C.name}`);
 }
 
 // ═══════════════════════════════════════════════════════════════════════

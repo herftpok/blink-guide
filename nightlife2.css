@@ -166,27 +166,47 @@ body {
 .nl-head {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
   padding: 6px var(--pad) 0;
 }
-.nl-title {
-  flex: 1;
-  margin: 0;
-  font-size: 40px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.045em;
-  white-space: nowrap;
+
+/* герой повторяет шапку шеринг-экрана: крупный титул в две строки
+   и шар, уходящий за край */
+.nl-logo {
+  width: 82px;
+  height: auto;
+  opacity: 0.96;
 }
-/* 3D-звезда-маскот, чуть завалена — как стикеры в приложении */
-.title-star {
-  display: inline-block;
-  width: 38px; height: 38px;
-  margin-left: 4px;
-  vertical-align: -6px;
+
+.nl-hero {
+  position: relative;
+  /* высоты хватает, чтобы шар поместился целиком: иначе его режет нижняя
+     граница блока, а снять overflow нельзя — лента поедет вбок */
+  min-height: 182px;
+  padding: 0 var(--pad);
+  overflow: hidden;
+}
+.nl-disco {
+  position: absolute;
+  right: -46px; top: 30px;
+  z-index: 6;                /* поверх карточки и стикера персентиля */
+  width: 138px; height: 138px;
   object-fit: contain;
-  transform: rotate(-14deg);
+  pointer-events: none;
 }
+
+.nl-title {
+  position: relative;
+  z-index: 2;
+  margin: 30px 0 0;
+  padding-right: 104px;      /* колодец под шар */
+  font-size: 46px;
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+}
+.nl-title span { display: block; }
 /* в пилюле — короткое имя города (спб, екб), полное живёт в шторке выбора */
 .city-pill {
   flex-shrink: 0;
@@ -223,11 +243,13 @@ body {
 }
 
 .nl-sub {
-  margin: 10px 0 0;
-  padding: 0 var(--pad);
-  font-size: 15px;
+  position: relative;
+  z-index: 2;
+  max-width: 226px;
+  margin: 12px 0 0;
+  font-size: 14px;
   font-weight: 500;
-  line-height: 1.28;
+  line-height: 1.3;
   color: rgba(255, 255, 255, 0.55);
 }
 
@@ -311,14 +333,17 @@ body {
 /* ═══════════ 1 · «твоя ночь» ═══════════
    Тёмная карточка в тон экрану: холодное фиолетово-голубое свечение и
    3D-бриллиант. Тап открывает личную сводку — где был и куда сходить. */
+/* вход в личный экран. Шара и полосы-градиента тут нет — они живут на
+   самом шеринге; вместо них стикер-число, шкала по местам и акцентная
+   кнопка, чтобы блок читался как приглашение, а не как строка статистики */
 .you {
   position: relative;
   display: block;
   width: calc(100% - var(--pad) * 2);
-  margin: 20px var(--pad) 0;
-  padding: 20px 20px 18px;
-  border: none;
-  border-radius: 28px;
+  margin: 22px var(--pad) 0;
+  padding: 15px 15px 17px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
   overflow: hidden;
   color: var(--text);
   font: inherit;
@@ -326,77 +351,96 @@ body {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   background:
+    radial-gradient(78% 150% at -4% 50%, rgba(157, 123, 255, 0.28) 0%, transparent 64%),
+    radial-gradient(60% 130% at 104% 50%, rgba(255, 117, 225, 0.16) 0%, transparent 66%),
+    rgba(255, 255, 255, 0.035);
+}
+.you:active { opacity: 0.86; }
+
+.you-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+.you-badge {
+  flex-shrink: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+.you-badge .xnum { font-size: 34px; margin-right: 1px; }
+.you-badge em {
+  font-style: normal;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: rgba(255, 255, 255, 0.44);
+}
+.you-txt {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.you-txt b {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.you-txt i {
+  font-style: normal;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+}
+.you-go {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 36px; height: 36px;
+  border-radius: 13px;
+  background: var(--accent);
+  color: #12000e;
+}
+.you-go svg {
+  width: 7px; height: 12px;
+  fill: none; stroke: currentColor; stroke-width: 2.4;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* шкала: одно деление — одно место гида */
+.you-seg {
+  display: flex;
+  gap: 3px;
+  margin-top: 15px;
+}
+.you-seg i {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.12);
+  transition: background 0.5s ease, transform 0.5s ease;
+}
+.you--lit .you-seg i.on {
+  background: linear-gradient(180deg, #ff9dea, #b48cff);
+}
+.you:active { opacity: 0.82; }
+/* подсказка, что карточка кликабельна */
+
+/* пустое состояние — в этом городе тебя ещё не было */
+.you--empty {
+  display: block;
+  padding: 26px 20px 24px;
+  border-top: none;
+  border-radius: 28px;
+  overflow: hidden;
+  text-align: center;
+  background:
     radial-gradient(120% 130% at 90% -12%, rgba(157, 123, 255, 0.42) 0%, transparent 58%),
     radial-gradient(110% 120% at 0% 112%, rgba(111, 210, 255, 0.20) 0%, transparent 60%),
     linear-gradient(150deg, #1c1728 0%, #131318 100%);
 }
-.you:active { opacity: 0.82; }
-.you-disco {
-  position: absolute;
-  right: 8px; top: 10px;
-  width: 84px; height: 84px;
-  object-fit: contain;
-  pointer-events: none;
-}
-.you-eyebrow {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
-}
-.you-num {
-  margin-top: 8px;
-  font-size: 54px;
-  font-weight: 800;
-  letter-spacing: -0.055em;
-  line-height: 0.9;
-  font-variant-numeric: tabular-nums;
-}
-.you-num em {
-  font-style: normal;
-  font-size: 30px;
-  letter-spacing: -0.04em;
-  color: rgba(255, 255, 255, 0.42);
-}
-.you-t {
-  margin-top: 9px;
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.6);
-}
-.you-bar {
-  margin-top: 15px;
-  height: 8px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.11);
-  overflow: hidden;
-}
-.you-bar b {
-  display: block;
-  height: 100%;
-  border-radius: 4px;
-  background: linear-gradient(90deg, #ff75e1, #9d7bff);
-  transition: width 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-/* подсказка, что карточка кликабельна */
-.you-more {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 14px;
-  font-size: 13px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.62);
-}
-.you-more svg {
-  width: 6px; height: 10px;
-  fill: none; stroke: currentColor; stroke-width: 2;
-  stroke-linecap: round; stroke-linejoin: round;
-}
-
-/* пустое состояние — в этом городе тебя ещё не было */
-.you--empty { text-align: center; padding: 26px 20px 24px; }
 .you-star {
   display: block;
   width: 92px; height: 92px;
