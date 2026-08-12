@@ -167,6 +167,71 @@ const missingOf = () => C.venues
   .filter((v) => v.you === 0 && v.friends.length > 0)
   .sort((a, b) => b.friends.length - a.friends.length || b.guests - a.guests);
 
+const PCT_BRAG = 25;          // до какого персентиля статус ещё звучит как достижение
+
+// доля города: 4% значит «ты выше 96% тусовщиков»
+const pctOf = (me) => (me.rank ? Math.max(1, Math.round((me.rank / me.total) * 100)) : null);
+
+// персентиль оторванным голографическим стикером. На шеринге он про ярлык
+// («топ 4%»), в шапке — обращение к самому человеку («ты в топ 4%»)
+function pctChip(pct, { lead = 'топ', cls = '' } = {}) {
+  const chip = el('div', `sh2-pct ${cls}`.trim());
+  chip.append(el('span', null, lead), el('b', null, `${pct}%`),
+              el('span', null, `тусовщиков ${C.gen}`));
+  return chip;
+}
+
+// две личные подписи: с кем чаще пересекаешься и куда ходишь чаще всего
+function duoRow(been, fav, cls = '') {
+  const buddy = nightBuddy(been);
+  if (!buddy && !fav) return null;
+
+  const duo = el('div', `sh2-duo ${cls}`.trim());
+  if (buddy) {
+    const p = person(buddy.id);
+    const item = el('div', 'sh2-duo-i');
+    item.append(avatar(p));
+    const t = el('div', 'sh2-duo-t');
+    t.append(el('b', null, lc(p.name)));
+    t.append(el('i', null, `${buddy.n} общих ${plural(buddy.n, 'место', 'места', 'мест')}`));
+    item.append(t);
+    duo.append(item);
+  }
+  if (fav) {
+    const item = el('div', 'sh2-duo-i');
+    item.append(xnum(`x${fav.you}`, 1));
+    const t = el('div', 'sh2-duo-t');
+    t.append(el('b', null, fav.name), el('i', null, 'любимое место'));
+    item.append(t);
+    duo.append(item);
+  }
+  return duo;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// 0 · шапка: персентиль под титулом и личная пара под карточкой
+// ═══════════════════════════════════════════════════════════════════════
+function renderHero() {
+  const me = C.me;
+
+  const slot = $('hero-pct');
+  slot.textContent = '';
+  const pct = pctOf(me);
+  // «ты в топ 71%» — не повод для гордости: в шапке стикер только тем,
+  // кто реально в верхней четверти города
+  if (me.spots && pct && pct <= PCT_BRAG) {
+    slot.append(pctChip(pct, { lead: 'ты в топ', cls: 'nl-pct' }));
+  }
+
+  const duoSlot = $('you-duo');
+  duoSlot.textContent = '';
+  if (me.spots) {
+    const been = beenOf();
+    const duo = duoRow(been, been[0] || null, 'nl-duo');
+    if (duo) duoSlot.append(duo);
+  }
+}
+
 // ═══════════════════════════════════════════════════════════════════════
 // 1 · «твоя ночь» — тёмная карточка, тап открывает личную сводку
 // ═══════════════════════════════════════════════════════════════════════
@@ -428,7 +493,7 @@ function openYou() {
   const been = beenOf();
   const fav = been[0] || null;              // где был чаще всего
   const [w1, w2] = archetype(me.spots, C.guide);
-  const pct = me.rank ? Math.max(1, Math.round((me.rank / me.total) * 100)) : null;
+  const pct = pctOf(me);
 
   shareBody.textContent = '';
   if (!shareEl.querySelector('.sh2-map')) {
@@ -458,15 +523,7 @@ function openYou() {
   shareBody.append(title);
 
   // ── персентиль наклонным стикером ──
-  if (pct) {
-    const chip = el('div', 'sh2-pct');
-    chip.append(
-      el('span', null, 'топ'),
-      el('b', null, `${pct}%`),
-      el('span', null, `тусовщиков ${C.gen}`),
-    );
-    shareBody.append(chip);
-  }
+  if (pct) shareBody.append(pctChip(pct));
 
   // ── прогресс по гиду ──
   const prog = el('div', 'sh2-prog');
@@ -486,31 +543,8 @@ function openYou() {
   }, REDUCED ? 0 : 780);
 
   // ── две личные подписи: с кем ходишь и куда чаще всего ──
-  const buddy = nightBuddy(been);
-  if (buddy || fav) {
-    const duo = el('div', 'sh2-duo');
-    if (buddy) {
-      const p = person(buddy.id);
-      const item = el('div', 'sh2-duo-i');
-      item.append(avatar(p));
-      const t = el('div', 'sh2-duo-t');
-      t.append(el('b', null, lc(p.name)));
-      t.append(el('i', null,
-        `${buddy.n} общих ${plural(buddy.n, 'место', 'места', 'мест')}`));
-      item.append(t);
-      duo.append(item);
-    }
-    if (fav) {
-      const item = el('div', 'sh2-duo-i');
-      item.append(xnum(`x${fav.you}`, 1));
-      const t = el('div', 'sh2-duo-t');
-      t.append(el('b', null, fav.name));
-      t.append(el('i', null, 'любимое место'));
-      item.append(t);
-      duo.append(item);
-    }
-    shareBody.append(duo);
-  }
+  const duo = duoRow(been, fav);
+  if (duo) shareBody.append(duo);
 
   // ── нечего шерить: показываем, с чего начать ночь ──
   if (!been.length) {
@@ -600,6 +634,7 @@ function setCity(id) {
 // сборка
 // ═══════════════════════════════════════════════════════════════════════
 function renderAll() {
+  renderHero();
   renderYou();
   renderVenues();
   renderPartiers();

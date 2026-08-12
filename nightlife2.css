@@ -1319,3 +1319,15 @@ body {
   pointer-events: none;
 }
 .toast.in { opacity: 1; transform: translate(-50%, 0); }
+
+/* стикер персентиля в шапке: у `.sh2-pct` расчёт на flex-родителя,
+   в герое он без ширины растянулся бы на весь блок и уехал за край */
+.nl-pct {
+  width: max-content;
+  max-width: 100%;
+  margin-top: 20px;
+}
+
+/* напарник и любимое место под карточкой входа */
+.nl-duo { margin: 22px var(--pad) 0; }
+
